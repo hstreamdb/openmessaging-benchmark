@@ -18,3 +18,5 @@ core/*.json
 # IntelliJ artifacts
 .idea/
 *.iml
+
+/local/
