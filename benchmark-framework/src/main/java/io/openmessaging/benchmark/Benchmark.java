@@ -64,7 +64,10 @@ public class Benchmark {
         @Parameter(description = "Workloads", required = true)
         public List<String> workloads;
 
-        @Parameter(names = { "-o", "--output" }, description = "Output", required = false)
+        @Parameter(names = { "-od", "--output-dir" }, description = "Output base directory", required = false)
+        public String outputDir;
+
+        @Parameter(names = { "-o", "--output" }, description = "Output filepath", required = false)
         public String output;
     }
 
@@ -152,12 +155,16 @@ public class Benchmark {
 
                     TestResult result = generator.run();
 
+                    String fileDir = (arguments.outputDir != null && arguments.outputDir.length() > 0)
+                            ? arguments.outputDir
+                            : ".";
                     String fileName = (arguments.output != null && arguments.output.length() > 0) ? arguments.output
                             : String.format("%s-%s-%s.json", workloadName, driverConfiguration.name,
                                     dateFormat.format(new Date()));
+                    File filePath = new File(fileDir, fileName);
 
-                    log.info("Writing test result into {}", fileName);
-                    writer.writeValue(new File(fileName), result);
+                    log.info("Writing test result into {}", filePath);
+                    writer.writeValue(filePath, result);
 
                     generator.close();
                 } catch (Exception e) {
